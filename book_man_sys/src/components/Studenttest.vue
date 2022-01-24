@@ -2,6 +2,7 @@
   <div>
     <h1>学生界面:{{ "你好" + $store.state.userInfo.name }}</h1>
     <el-button @click="logOut">注销</el-button>
+    <el-button @click="testClick">test</el-button>
   </div>
 </template>
 
@@ -20,6 +21,15 @@ export default {
     //   });
     // },
     logOut() {
+      this.$store.commit("loginOut");
+      this.$router.push("/login");
+      this.$message({
+        message: "注销成功",
+        center: true,
+        type: "success",
+      });
+    },
+    testClick() {
       var that = this;
       this.$axios({
         method: "POST",

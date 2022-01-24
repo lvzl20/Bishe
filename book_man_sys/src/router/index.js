@@ -5,6 +5,7 @@ const Studenttest = () => import('@/components/Studenttest')
 const Admintest = () => import('@/components/Admintest')
 const Teachertest = () => import('@/components/Teachertest')
 const Login = () => import('@/components/Login')
+const NotFound = () => import('@/components/NotFound')
 // import Admintest from '@/components/Admintest'
 // import Teachertest from '@/components/Teachertest'
 // import Login from '@/components/Login'
@@ -30,39 +31,63 @@ const router = new Router({
     {
       path: '/helloworld',
       name: 'HelloWorld',
-      component: HelloWorld
+      component: HelloWorld,
+      meta: {
+        needLogin: true
+      }
     },
     {
       path: '/studenttest',
       name: 'Studenttest',
-      component: Studenttest
+      component: Studenttest,
+      meta: {
+        needLogin: true
+      }
     },
     {
       path: '/admintest',
       name: 'Admintest',
-      component: Admintest
+      component: Admintest,
+      meta: {
+        needLogin: true
+      }
     },
     {
       path: '/teachertest',
       name: 'Teachertest',
       component: Teachertest
+      ,
+      meta: {
+        needLogin: true
+      }
+    },
+    {
+      path: '/notfound',
+      name: 'Notfound',
+      component: NotFound
+    },
+    {
+      path: '*',
+      redirect: '/notfound' // 如果页面不存在,重定向到404页面
     }
   ]
 })
 // 路由导航router.beforeEach 注册一个全局前置守卫，判断用户是否登陆
 router.beforeEach((to, from, next) => {
-  // 去登录页面就直接去,并清除sessionStorage
-  if (to.path === '/login') {
-    sessionStorage.clear()
+  let token = sessionStorage.getItem("token");
+  // 有token的时候
+  if (token) {
     next()
+
   } else {
-    let token = sessionStorage.getItem('token');
-    // 如果token没有代表用户没有登录
-    if (token === undefined || token === '' || token === null) {
-      next('/login');
-    } else {
-      next();
+    // 需要登录权限的页面没有token进入登录页面
+    if (to.meta.needLogin || to.path === './login') {
+      next('./login')
+    } else if (to.path === './notfound') {
+      next()
     }
+    next();
   }
+
 })
 export default router;

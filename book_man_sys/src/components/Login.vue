@@ -148,7 +148,7 @@ export default {
       // 向后端发送登录请求
       this.$axios({
         method: "post",
-        url: "/login/user",
+        url: "/login/loginOn",
         data: that.user,
       }).then(function (res) {
         // 接受错误信息
@@ -162,20 +162,37 @@ export default {
           // 重置验证码
           that.getVeficationCode();
         } else if (res.data["status"] == 200) {
-          // alert("登录成功");
-          that.$store.commit("setLogined");
-          that.$store.commit("setUserInfo", {
-            id: res.data["data"]["id"],
-            name: res.data["data"]["name"],
-          });
+          // 登录成功, 将用户基本信息存入store
+          that.$store.commit("setUserInfo", res.data["data"]);
           // 将token保存至会话中
           sessionStorage.setItem("token", res.data["token"]);
+          // 进入相应页面
+          that.$message({
+            message: "登录成功",
+            center: true,
+            type: "success",
+          });
           if (that.user.loginObject === "学生") {
-            that.$router.push("/studenttest");
+            that.$router.replace({
+              path: "/studenttest",
+              query: {
+                id: res.data["data"]["id"],
+              },
+            });
           } else if (that.user.loginObject === "教师") {
-            that.$router.push("/teachertest");
+            that.$router.replace({
+              path: "/teachertest",
+              query: {
+                id: res.data["data"]["id"],
+              },
+            });
           } else if (that.user.loginObject === "管理员") {
-            that.$router.push("/admintest");
+            that.$router.replace({
+              path: "/admintest",
+              query: {
+                id: res.data["data"]["id"],
+              },
+            });
           }
         }
       });

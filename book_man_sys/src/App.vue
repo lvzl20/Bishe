@@ -18,7 +18,17 @@
 <script>
 export default {
   name: "App",
+  mounted() {
+    // if (window.history && window.history.pushState) {
+    //   // 向历史记录中插入了当前页
+    //   history.pushState(null, null, document.URL);
+
+    // }
+    // 禁用浏览器的返回键(目前无法处理)
+    window.addEventListener("popstate", this.goBack, false);
+  },
   created() {
+    var that = this;
     //在页面加载时读取sessionStorage里的状态信息
     if (sessionStorage.getItem("store")) {
       // 取出加密的store信息并解密
@@ -28,14 +38,13 @@ export default {
         Object.assign({}, this.$store.state, JSON.parse(oldStore))
       );
     }
-
-    //如果当前用户已登录(有token代表登录),在页面刷新时将vuex里的信息保存到sessionStorage里
+    // 如果当前用户已登录(有token代表登录),在页面刷新时将vuex里的信息保存到sessionStorage里
+    // 防止刷新时vuex的数据失效
     if (sessionStorage.getItem("token") !== undefined) {
       window.addEventListener("beforeunload", () => {
         // 调用加密类进行加密
         let newStore = this.$encrypt(JSON.stringify(this.$store.state));
         sessionStorage.setItem("store", newStore);
-        // sessionStorage.setItem("store", JSON.stringify(this.$store.state));
       });
     }
     this.$axios.interceptors.request.use(
@@ -62,13 +71,26 @@ export default {
         if (error.response.status === 401) {
           // 清除token
           sessionStorage.removeItem("token");
-          alert("登录失效,请重新登录");
+          that.$message({
+            message: "登录失效，请重新登录",
+            center: true,
+            type: "info",
+          });
           // 重新跳转到login页面
           this.$router.push("/login");
         }
         return Promise.reject(error);
       }
     );
+  },
+  destroyed() {
+    window.removeEventListener("popstate", this.goBack, false);
+  },
+  methods: {
+    goBack() {
+      // console.log("点击了浏览器的返回按钮");
+      history.pushState(null, null, document.URL);
+    },
   },
 };
 </script>
