@@ -110,6 +110,8 @@ export default {
   mounted: function () {
     // 加载完网页后就需要显示验证码
     this.getVeficationCode();
+    // 目前不知道哪里有问题(进入登录页面，调用函数清空sessionstorage)
+    this.$store.commit("loginOut");
   },
   methods: {
     // 切换登录对象(学生,教师,管理员)

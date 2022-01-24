@@ -24,13 +24,13 @@ export default {
     //   history.pushState(null, null, document.URL);
 
     // }
-    // 禁用浏览器的返回键(目前无法处理)
+    // 禁用浏览器的返回键
     window.addEventListener("popstate", this.goBack, false);
   },
   created() {
     var that = this;
     //在页面加载时读取sessionStorage里的状态信息
-    if (sessionStorage.getItem("store")) {
+    if (sessionStorage.getItem("store") && sessionStorage.getItem("token")) {
       // 取出加密的store信息并解密
       let Store = sessionStorage.getItem("store");
       let oldStore = this.$decrypt(Store);

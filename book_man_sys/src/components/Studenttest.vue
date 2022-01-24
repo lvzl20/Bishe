@@ -22,7 +22,7 @@ export default {
     // },
     logOut() {
       this.$store.commit("loginOut");
-      this.$router.push("/login");
+      this.$router.replace("/login");
       this.$message({
         message: "注销成功",
         center: true,

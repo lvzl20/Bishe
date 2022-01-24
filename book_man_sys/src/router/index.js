@@ -75,17 +75,27 @@ const router = new Router({
 // 路由导航router.beforeEach 注册一个全局前置守卫，判断用户是否登陆
 router.beforeEach((to, from, next) => {
   let token = sessionStorage.getItem("token");
+  console.log("进入守卫")
   // 有token的时候
   if (token) {
+    // if (to.path === './login') {
+    //   next('./login')
+    //   console.log(1)
+    // }
+    console.log(6)
     next()
 
   } else {
     // 需要登录权限的页面没有token进入登录页面
     if (to.meta.needLogin || to.path === './login') {
+      console.log(to.meta.needLogin)
+      console.log(2)
       next('./login')
     } else if (to.path === './notfound') {
+      console.log(3)
       next()
     }
+    console.log(4)
     next();
   }
 
