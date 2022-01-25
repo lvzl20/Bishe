@@ -78,14 +78,11 @@ router.beforeEach((to, from, next) => {
   console.log("进入守卫")
   // 有token的时候
   if (token) {
-    // if (to.path === './login') {
-    //   next('./login')
-    //   console.log(1)
-    // }
+    // 如果用户登录
     console.log(6)
     next()
-
-  } else {
+  }
+  else {
     // 需要登录权限的页面没有token进入登录页面
     if (to.meta.needLogin || to.path === './login') {
       console.log(to.meta.needLogin)

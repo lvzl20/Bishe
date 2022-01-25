@@ -284,9 +284,7 @@ export default {
   width: 400px;
   background-color: rgb(93, 164, 220);
 }
-.el-dropdown-link {
-  cursor: pointer;
-}
+
 .label-font {
   font-size: 1.6rem;
   font-family: "微软雅黑";

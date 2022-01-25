@@ -4,6 +4,36 @@
       <el-col>
         <div class="header-text">计算机科学与技术学院图书系统</div>
       </el-col>
+      <!-- 用户登录后才显示头像和个人信息 -->
+      <el-col :style="$store.state.isLoginStyle">
+        <!-- 个人信息下拉框 -->
+        <el-dropdown
+          @command="changeProfileOption"
+          style="float: right; margin: 25px 0 5px 10px"
+        >
+          <span class="el-dropdown-link label-font">
+            {{ $store.state.userInfo.name + " " }}
+            <i class="el-icon-arrow-down label-font"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item class="label-font" command="profile"
+              >基本信息</el-dropdown-item
+            >
+            <el-dropdown-item class="label-font" command="loginOut"
+              >注销</el-dropdown-item
+            >
+          </el-dropdown-menu>
+        </el-dropdown>
+        <!-- 个人头像 -->
+        <el-avatar
+          :size="45"
+          :src="$store.state.userInfo.profile_pic"
+          @error="errorHandler"
+          style="float: right; margin: 15px auto"
+          ><img
+            src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
+        /></el-avatar>
+      </el-col>
     </el-row>
 
     <!-- <div>
@@ -18,12 +48,13 @@
 <script>
 export default {
   name: "App",
+  data() {
+    return {
+      // circleUrl: "http://175.24.66.250:8080/picture/default_man.png",
+      // isLoginStyle: "display: none",
+    };
+  },
   mounted() {
-    // if (window.history && window.history.pushState) {
-    //   // 向历史记录中插入了当前页
-    //   history.pushState(null, null, document.URL);
-
-    // }
     // 禁用浏览器的返回键
     window.addEventListener("popstate", this.goBack, false);
   },
@@ -77,7 +108,7 @@ export default {
             type: "info",
           });
           // 重新跳转到login页面
-          this.$router.push("/login");
+          this.$router.replace("/login");
         }
         return Promise.reject(error);
       }
@@ -91,6 +122,10 @@ export default {
       // console.log("点击了浏览器的返回按钮");
       history.pushState(null, null, document.URL);
     },
+    errorHandler() {
+      return true;
+    },
+    changeProfileOption(cmd) {},
   },
 };
 </script>
@@ -116,12 +151,21 @@ p {
 }
 .header-text {
   color: #3a3a3a;
-  font-size: 28px;
+  font-size: 2.5rem;
   font-weight: bold;
-  margin-top: 10px;
-  margin-left: 30px;
+  margin-top: 0.1rem;
+  margin-left: 2rem;
 }
 .menubar {
   text-decoration: none;
+}
+.label-font {
+  font-size: 1.6rem;
+  font-family: "微软雅黑";
+  color: #303133;
+  /* font-weight: bold; */
+}
+.el-dropdown-link {
+  cursor: pointer;
 }
 </style>

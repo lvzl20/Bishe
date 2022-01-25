@@ -13,7 +13,8 @@ const store = new Vuex.Store({
 
         // 用户信息, 账号和名字
         userInfo: {
-        }
+        },
+        isLoginStyle: "display: none",
     },
     mutations: {
         // 注意： 如果要操作 store 中的 state 值，只能通过 调用 mutations 提供的方法，
@@ -25,10 +26,12 @@ const store = new Vuex.Store({
         // 用户登录
         setUserInfo(state, data) {
             state.userInfo = data;
+            state.isLoginStyle = "display: inline-block";
         },
         // 用户注销,情况sessionstorage
         loginOut(state) {
             state.userInfo = {};
+            state.isLoginStyle = "display: none";
             sessionStorage.clear();
         }
     },
