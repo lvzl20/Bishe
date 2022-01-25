@@ -9,12 +9,12 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 import strToBase64 from './plugin/strToBase64'
-import Utils from "./plugin/utils";
+import myCrypto from "./plugin/myCrypto";
 document.title = '计算机科学与技术学院图书系统'
 Vue.config.productionTip = false
 
 Vue.use(strToBase64)
-Vue.use(Utils)
+Vue.use(myCrypto)
 Vue.use(ElementUI)
 
 // 设置默认请求头

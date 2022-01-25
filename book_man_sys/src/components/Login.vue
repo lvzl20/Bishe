@@ -63,23 +63,30 @@
           class="verification-code clear"
         />
       </div>
-      <div class="item" style="text-align: right">
-        <!-- 错误消息弹出位置 -->
-        <el-alert
-          type="error"
-          :style="errorStyle"
-          :title="errorMsg"
-          close-text="关闭"
-          @close="closeErrMsg"
-        >
-          <!-- closable -->
-        </el-alert>
-        <a href="#" class="label-font clear" @click="forgetPwd">忘记密码?</a>
-      </div>
+      <!-- <div class="item" style="text-align: center"> -->
+      <!-- 错误消息弹出位置 -->
+      <el-alert
+        type="error"
+        :title="errorMsg"
+        :style="errorStyle"
+        close-text="关闭"
+        @close="closeErrMsg"
+      >
+      </el-alert>
+      <!-- </div> -->
       <div class="item" style="text-align: center">
-        <el-button class="login-btn label-font" @click="loginUser"
-          >登录</el-button
+        <el-button
+          class="login-btn label-font"
+          @click="loginUser"
+          v-loading.fullscreen.lock="fullscreenLoading"
         >
+          登录</el-button
+        >
+      </div>
+      <div class="item">
+        <el-checkbox v-model="isRemember"></el-checkbox
+        ><span class="label-font"> 记住密码</span>
+        <a href="#" class="label-font clear" @click="forgetPwd">忘记密码?</a>
       </div>
     </el-card>
   </div>
@@ -105,6 +112,10 @@ export default {
       // 错误消息
       errorStyle: "display: none;",
       errorMsg: "",
+      // 按登录时加载
+      fullscreenLoading: false,
+      // 是否勾选记住密码
+      isRemember: false,
     };
   },
   mounted: function () {
@@ -112,6 +123,15 @@ export default {
     this.getVeficationCode();
     // 目前不知道哪里有问题(进入登录页面，调用函数清空sessionstorage)
     this.$store.commit("loginOut");
+    // 如果用户记住了账号信息,加载出来
+    if (localStorage.getItem("rememberInfo")) {
+      let rememberInfo = localStorage.getItem("rememberInfo");
+      rememberInfo = JSON.parse(this.$decrypt(rememberInfo));
+      this.user.username = rememberInfo["username"];
+      this.user.password = rememberInfo["password"];
+      this.user.loginObject = rememberInfo["loginObject"];
+      this.isRemember = true;
+    }
   },
   methods: {
     // 切换登录对象(学生,教师,管理员)
@@ -147,12 +167,17 @@ export default {
         return;
       }
       var that = this;
+      // 点击登录,激活加载框
+      this.fullscreenLoading = true;
+
       // 向后端发送登录请求
       this.$axios({
         method: "post",
         url: "/login/loginOn",
         data: that.user,
       }).then(function (res) {
+        // 加载框失效
+        that.fullscreenLoading = false;
         // 接受错误信息
         if (
           res.data["status"] == 201 ||
@@ -160,10 +185,25 @@ export default {
           res.data["status"] == 203
         ) {
           that.errorMsg = res.data["statusInfo"]["detail"];
-          that.errorStyle = "display: inline-block";
+          that.errorStyle = "display: inline-block;";
           // 重置验证码
           that.getVeficationCode();
         } else if (res.data["status"] == 200) {
+          // 如果勾选了记住密码
+          if (that.isRemember === true) {
+            let rememberInfo = {
+              username: that.user.username,
+              password: that.user.password,
+              loginObject: that.user.loginObject,
+            };
+            rememberInfo = that.$encrypt(JSON.stringify(rememberInfo));
+            localStorage.setItem("rememberInfo", rememberInfo);
+          } else {
+            // 如果取消勾选则删除localStorage
+            if (localStorage.getItem("rememberInfo")) {
+              localStorage.removeItem("rememberInfo");
+            }
+          }
           // 登录成功, 将用户基本信息存入store
           that.$store.commit("setUserInfo", res.data["data"]);
           // 将token保存至会话中
@@ -199,28 +239,28 @@ export default {
         }
       });
       // 隐藏消息
-      // that.errorStyle = "display: none;";
+      // that.errorStyle = "item hidden";
     },
     // 检查用户输入信息是否正确,前端进行简单判断,主要还是给后端判断
     judgeUserInput() {
       if (this.user.username === "") {
         this.errorMsg = "请输入账号";
-        this.errorStyle = "display: inline-block";
+        this.errorStyle = "display: inline-block;";
         return false;
       }
       if (this.user.password === "") {
         this.errorMsg = "请输入密码";
-        this.errorStyle = "display: inline-block";
+        this.errorStyle = "display: inline-block;";
         return false;
       }
       if (this.user.inputCode === "") {
         this.errorMsg = "请输入验证码";
-        this.errorStyle = "display: inline-block";
+        this.errorStyle = "display: inline-block;";
         return false;
       }
       if (this.user.inputCode.length !== 4) {
         this.errorMsg = "验证码错误";
-        this.errorStyle = "display: inline-block";
+        this.errorStyle = "display: inline-block;";
         return false;
       }
       return true;
@@ -253,6 +293,11 @@ export default {
   color: #303133;
   /* font-weight: bold; */
 }
+.el-checkbox >>> .el-checkbox__label {
+  font-size: 1.6rem;
+  font-family: "微软雅黑";
+  color: #303133;
+}
 .item {
   height: 36px;
   margin: 15px auto;
@@ -260,6 +305,7 @@ export default {
 }
 a {
   text-decoration: none;
+  float: right;
 }
 .el-input {
   /* height: 20px; */
@@ -284,7 +330,9 @@ a {
   background-color: #fff;
   width: 70%;
   padding-left: 20%;
+  margin-left: 15%;
 }
+
 .login-btn {
   height: 40px;
   width: 80%;

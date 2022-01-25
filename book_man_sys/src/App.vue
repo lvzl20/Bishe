@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <el-row id="header">
+    <el-row class="header">
       <el-col>
         <div class="header-text">计算机科学与技术学院图书系统</div>
       </el-col>
@@ -106,7 +106,7 @@ p {
   font-size: 14px;
   font-size: 1.4rem;
 }
-#header {
+.header {
   background-image: url(./assets/header_img.jpg);
   background-position: center;
   background-color: rgb(225, 248, 254);
