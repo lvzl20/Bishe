@@ -7,6 +7,7 @@ import Axios from 'axios'
 import store from './store/store.js'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import 'element-ui/lib/theme-chalk/display.css'
 
 import strToBase64 from './plugin/strToBase64'
 import myCrypto from "./plugin/myCrypto";

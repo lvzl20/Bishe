@@ -5,8 +5,9 @@
 </template>
 
 <script>
+// 管理员页面
 export default {
-  name: "Test",
+  name: "Admin",
   data() {
     return {
       msg: "This is a test msg",

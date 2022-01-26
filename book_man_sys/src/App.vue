@@ -6,10 +6,11 @@
       </el-col>
       <!-- 用户登录后才显示头像和个人信息 -->
       <el-col :style="$store.state.isLoginStyle">
-        <!-- 个人信息下拉框 -->
+        <!-- 个人信息下拉框 -->。
         <el-dropdown
           @command="changeProfileOption"
           style="float: right; margin: 25px 0 5px 10px"
+          trigger="click"
         >
           <span class="el-dropdown-link label-font">
             {{ $store.state.userInfo.name + " " }}
@@ -36,10 +37,6 @@
       </el-col>
     </el-row>
 
-    <!-- <div>
-      <router-link to="./helloworld" class="menubar">helloword界面</router-link>
-      <router-link to="./test" class="menubar">test界面</router-link>
-    </div> -->
     <!-- 路由匹配到的文件显示到这里 -->
     <router-view />
   </div>
@@ -125,7 +122,18 @@ export default {
     errorHandler() {
       return true;
     },
-    changeProfileOption(cmd) {},
+    changeProfileOption(cmd) {
+      // 点击注销
+      if (cmd === "loginOut") {
+        this.$store.commit("loginOut");
+        this.$router.replace("/login");
+        this.$message({
+          message: "注销成功",
+          center: true,
+          type: "success",
+        });
+      }
+    },
   },
 };
 </script>

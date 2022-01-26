@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>学生界面:{{ "你好" + $store.state.userInfo.name }}</h1>
+    <h1>教师:{{ "你好" + $store.state.userInfo.name }}</h1>
     <el-button @click="logOut">注销</el-button>
     <el-button @click="testClick">test</el-button>
   </div>
@@ -8,7 +8,8 @@
 
 <script>
 export default {
-  name: "Test",
+  // 教师页面
+  name: "Teacher",
   data() {
     return {
       msg: "This is a test msg",

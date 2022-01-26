@@ -1,11 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+// import { component } from 'vue/types/umd'
 const HelloWorld = () => import('@/components/HelloWorld')
-const Studenttest = () => import('@/components/Studenttest')
-const Admintest = () => import('@/components/Admintest')
-const Teachertest = () => import('@/components/Teachertest')
+const Student = () => import('@/components/Student')
+const Admin = () => import('@/components/Admin')
+const Teacher = () => import('@/components/Teacher')
 const Login = () => import('@/components/Login')
 const NotFound = () => import('@/components/NotFound')
+const PersonalProfile = () => import('@/components/publicComponents/personal_profile')
 // import Admintest from '@/components/Admintest'
 // import Teachertest from '@/components/Teachertest'
 // import Login from '@/components/Login'
@@ -37,25 +39,32 @@ const router = new Router({
       }
     },
     {
-      path: '/studenttest',
-      name: 'Studenttest',
-      component: Studenttest,
+      path: '/student',
+      name: 'Student',
+      component: Student,
+      meta: {
+        needLogin: true
+      },
+      children: [
+        {
+          path: 'personal_profile',
+          name: 'PersonalProfile',
+          component: PersonalProfile,
+        }
+      ]
+    },
+    {
+      path: '/admin',
+      name: 'Admin',
+      component: Admin,
       meta: {
         needLogin: true
       }
     },
     {
-      path: '/admintest',
-      name: 'Admintest',
-      component: Admintest,
-      meta: {
-        needLogin: true
-      }
-    },
-    {
-      path: '/teachertest',
-      name: 'Teachertest',
-      component: Teachertest
+      path: '/teacher',
+      name: 'Teacher',
+      component: Teacher
       ,
       meta: {
         needLogin: true

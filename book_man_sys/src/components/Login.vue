@@ -93,6 +93,7 @@
 </template>
 
 <script>
+// 登录页面
 export default {
   name: "Login",
   data() {
@@ -216,21 +217,21 @@ export default {
           });
           if (that.user.loginObject === "学生") {
             that.$router.replace({
-              path: "/studenttest",
+              path: "/student/personal_profile",
               query: {
                 id: res.data["data"]["id"],
               },
             });
           } else if (that.user.loginObject === "教师") {
             that.$router.replace({
-              path: "/teachertest",
+              path: "/teacher",
               query: {
                 id: res.data["data"]["id"],
               },
             });
           } else if (that.user.loginObject === "管理员") {
             that.$router.replace({
-              path: "/admintest",
+              path: "/admin",
               query: {
                 id: res.data["data"]["id"],
               },
