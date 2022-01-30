@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h1>This is Personal_profile page!</h1>
+    <h2 class="label-font">个人信息</h2>
+    <el-divider></el-divider>
+    <h1>This is {{ $store.state.loginObject }}'s Personal_profile page!</h1>
   </div>
 </template>
 
@@ -15,3 +17,8 @@ export default {
 };
 </script>
 
+<style scoped>
+h2 {
+  padding-bottom: 0.5rem;
+}
+</style>

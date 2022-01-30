@@ -10,28 +10,36 @@ const store = new Vuex.Store({
     state: {
         // 可以把 state 想象成 组件中的 data ,专门用来存储数据的
         // 如果在 组件中，想要访问，store 中的数据，只能通过 this.$store.state.来访问
-
         // 用户信息, 账号和名字
         userInfo: {
         },
+        // 登录对象(student/teacher/admin)
+        loginObject: "",
+        // 用户登录后才显示头像和个人信息
         isLoginStyle: "display: none",
+        // 记录上一次所在菜单页面,便于激活选中菜单样式
+        lastPage: "personal_profile",
     },
     mutations: {
-        // 注意： 如果要操作 store 中的 state 值，只能通过 调用 mutations 提供的方法，
-        // 才能操作对应的数据，不推荐直接操作 state 中的数据，因为 万一导致了数据的紊乱，
-        // 不能快速定位到错误的原因，因为，每个组件都可能有操作数据的方法；
-        // 注意:如果组件想要调用 mutations 中的方法,只能使用 this.$store.commit('方法名')
-        // 参数1： 是 state 状态； 参数2： 通过 commit 提交过来的参数；
-
         // 用户登录
         setUserInfo(state, data) {
             state.userInfo = data;
             state.isLoginStyle = "display: inline-block";
         },
-        // 用户注销,情况sessionstorage
+        setLoginObject(state, data) {
+            state.loginObject = data;
+        },
+        setLastPage(state, data) {
+            state.lastPage = data;
+        },
+        setMobileMenu(state, data) {
+            state.mobileMenu = data;
+        },
+        // 用户注销,清空sessionstorage
         loginOut(state) {
             state.userInfo = {};
             state.isLoginStyle = "display: none";
+            state.loginObject = "";
             sessionStorage.clear();
         }
     },
@@ -39,6 +47,24 @@ const store = new Vuex.Store({
 
     },
     getters: {
+        getMobileMenu(state) {
+            let userMenu;
+            // 视口小于768时的下拉框菜单选项
+            if (state.loginObject === "student") {
+                userMenu = [
+                    { command: "profile", name: "个人信息(学生)" },
+                    { command: "borrow", name: "当前借阅" },
+                ];
+            } else if (state.loginObject === "teacher") {
+                userMenu = [
+                    { command: "profile", name: "个人信息(教师)" },
+                    { command: "borrow", name: "当前借阅" },
+                ];
+            } else if (state.loginObject === "admin") {
+                userMenu = [{ command: "profile", name: "个人信息(管理员)" }];
+            }
+            return userMenu;
+        }
 
     }
 })

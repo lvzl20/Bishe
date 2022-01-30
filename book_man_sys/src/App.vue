@@ -16,10 +16,16 @@
             {{ $store.state.userInfo.name + " " }}
             <i class="el-icon-arrow-down label-font"></i>
           </span>
+          <!-- 当视口>=768时隐藏(hidden-sm-only),改为用户页面的左侧导航栏 -->
+          <!-- 视图小于768时动态生成不同用户的菜单选项 -->
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item class="label-font" command="profile"
-              >基本信息</el-dropdown-item
-            >
+            <el-dropdown-item
+              class="label-font hidden-sm-only"
+              v-for="(item, i) in $store.getters.getMobileMenu"
+              :key="item.command"
+              :command="item.command"
+              >{{ item.name }}
+            </el-dropdown-item>
             <el-dropdown-item class="label-font" command="loginOut"
               >注销</el-dropdown-item
             >
@@ -36,9 +42,10 @@
         /></el-avatar>
       </el-col>
     </el-row>
-
+    <el-divider></el-divider>
     <!-- 路由匹配到的文件显示到这里 -->
     <router-view />
+    <!-- 2333333333333333333333333 -->
   </div>
 </template>
 
@@ -46,10 +53,7 @@
 export default {
   name: "App",
   data() {
-    return {
-      // circleUrl: "http://175.24.66.250:8080/picture/default_man.png",
-      // isLoginStyle: "display: none",
-    };
+    return {};
   },
   mounted() {
     // 禁用浏览器的返回键
@@ -75,41 +79,6 @@ export default {
         sessionStorage.setItem("store", newStore);
       });
     }
-    this.$axios.interceptors.request.use(
-      (config) => {
-        if (sessionStorage.getItem("token")) {
-          // 如果存在token,给请求头添加token信息
-          config.headers.Authorization =
-            "Bearer " + sessionStorage.getItem("token");
-        }
-        return config;
-      },
-
-      (error) => {
-        return Promise.reject(error);
-      }
-    );
-    // 使用拦截器对token过期作出响应;
-    this.$axios.interceptors.response.use(
-      (response) => {
-        return response;
-      },
-      (error) => {
-        // 这个是处理响应失败的，也就是响应错误的，在这个箭头函数中，才能拿到401状态下的包
-        if (error.response.status === 401) {
-          // 清除token
-          sessionStorage.removeItem("token");
-          that.$message({
-            message: "登录失效，请重新登录",
-            center: true,
-            type: "info",
-          });
-          // 重新跳转到login页面
-          this.$router.replace("/login");
-        }
-        return Promise.reject(error);
-      }
-    );
   },
   destroyed() {
     window.removeEventListener("popstate", this.goBack, false);
@@ -132,6 +101,16 @@ export default {
           center: true,
           type: "success",
         });
+      } else if (cmd === "profile") {
+        // 保存本次所在菜单页面
+        this.$store.commit("setLastPage", "personal_profile");
+        this.$router.replace(
+          `/${this.$store.state.loginObject}/personal_profile`
+        );
+      } else if (cmd === "borrow") {
+        this.$store.commit("setLastPage", "borrow");
+        this.$router.replace(`/${this.$store.state.loginObject}/borrow`);
+        // }
       }
     },
   },
@@ -164,16 +143,32 @@ p {
   margin-top: 0.1rem;
   margin-left: 2rem;
 }
-.menubar {
+/* .menubar {
   text-decoration: none;
-}
+} */
 .label-font {
   font-size: 1.6rem;
   font-family: "微软雅黑";
   color: #303133;
-  /* font-weight: bold; */
 }
 .el-dropdown-link {
   cursor: pointer;
+}
+/* 设置分割线样式 */
+.el-divider {
+  background-color: #ccc;
+}
+.el-divider--horizontal {
+  margin: 0;
+}
+</style>
+
+<style scoped>
+.el-dropdown-menu__item:hover {
+  background-color: skyblue;
+  color: blue;
+}
+.el-dropdown-menu {
+  background-color: rgba(189, 218, 230, 0.7);
 }
 </style>

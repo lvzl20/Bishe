@@ -2,26 +2,26 @@
   <div>
     <el-row :gutter="10">
       <el-col :sm="4" class="hidden-xs-only">
-        <el-menu class="el-menu-vertical-demo" :router="true">
+        <el-menu
+          class="el-menu-vertical-demo"
+          :router="true"
+          :default-active="`/${$store.state.loginObject}/${$store.state.lastPage}`"
+        >
           <el-menu-item index="/student/personal_profile">
-            <!-- <i class="el-icon-location"></i> -->
-            <span slot="title" class="label-font">我的首页</span>
+            <span slot="title" class="label-font">个人信息</span>
           </el-menu-item>
-          <el-menu-item index="/student/personal_profile">
-            <!-- <i class="el-icon-menu"></i> -->
-            <span slot="title" class="label-font">证件信息</span>
+          <el-menu-item index="/student/borrow">
+            <span slot="title" class="label-font">当前借阅</span>
           </el-menu-item>
           <el-menu-item index="3">
-            <!-- <i class="el-icon-document"></i> -->
-            <span slot="title" class="label-font">我的借阅</span>
+            <span slot="title" class="label-font">借阅历史</span>
           </el-menu-item>
           <el-menu-item index="4">
-            <!-- <i class="el-icon-setting"></i> -->
             <span slot="title" class="label-font">我的挂失</span>
           </el-menu-item>
         </el-menu>
       </el-col>
-      <el-col :sm="19" :xs="24">
+      <el-col :sm="20" :xs="24">
         <router-view />
       </el-col>
     </el-row>
@@ -35,30 +35,33 @@ export default {
   data() {
     return {};
   },
+  mounted: function () {
+    // 进入页面先进入个人信息
+    this.$router.replace("/student/personal_profile");
+    this.$store.commit("setLastPage", "personal_profile");
+  },
   methods: {},
 };
 </script>
 
 <style scoped>
-.el-menu-vertical-demo:not(.el-menu--collapse) {
+.el-menu-vertical-demo {
   /* width: 8em;
   min-height: 75em; */
   background-color: rgb(225, 248, 254);
-  /* background-color: rgba(128, 128, 128, 0.5); */
   border-top: solid 1px #ccc;
   border-right: solid 1px #ccc;
 }
 
 span:hover {
-  color: rgb(102, 177, 255);
+  font-weight: bold;
+  color: blue;
 }
 .el-menu-item {
   border-bottom: 1px dashed #ccc;
 }
-.el-menu-item:hover {
-  background-color: gray;
-}
-.el-menu-item:focus {
-  background-color: gray;
+.el-menu-item.is-active {
+  background-color: skyblue;
+  font-weight: bold;
 }
 </style>

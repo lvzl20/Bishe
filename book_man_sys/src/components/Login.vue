@@ -78,9 +78,11 @@
         <el-button
           class="login-btn label-font"
           @click="loginUser"
-          v-loading.fullscreen.lock="fullscreenLoading"
+          :loading="loadingBtn"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="rgba(0, 0, 0, 0.8)"
         >
-          登录</el-button
+          {{ loadingLoginText }}</el-button
         >
       </div>
       <div class="item">
@@ -109,12 +111,13 @@ export default {
       },
       // 后台传入的验证码及内容
       verificationCodeSrc: "",
-
+      // 控制是否加载
+      loadingBtn: false,
+      // 控制加载前后的文本
+      loadingLoginText: "登录",
       // 错误消息
       errorStyle: "display: none;",
       errorMsg: "",
-      // 按登录时加载
-      fullscreenLoading: false,
       // 是否勾选记住密码
       isRemember: false,
     };
@@ -168,77 +171,85 @@ export default {
         return;
       }
       var that = this;
-      // 点击登录,激活加载框
-      this.fullscreenLoading = true;
-
+      // 开始加载
+      this.loadingBtn = true;
+      this.loadingLoginText = "登录中...";
       // 向后端发送登录请求
       this.$axios({
         method: "post",
         url: "/login/loginOn",
         data: that.user,
-      }).then(function (res) {
-        // 加载框失效
-        that.fullscreenLoading = false;
-        // 接受错误信息
-        if (
-          res.data["status"] == 201 ||
-          res.data["status"] == 202 ||
-          res.data["status"] == 203
-        ) {
-          that.errorMsg = res.data["statusInfo"]["detail"];
-          that.errorStyle = "display: inline-block;";
-          // 重置验证码
-          that.getVeficationCode();
-        } else if (res.data["status"] == 200) {
-          // 如果勾选了记住密码
-          if (that.isRemember === true) {
-            let rememberInfo = {
-              username: that.user.username,
-              password: that.user.password,
-              loginObject: that.user.loginObject,
-            };
-            rememberInfo = that.$encrypt(JSON.stringify(rememberInfo));
-            localStorage.setItem("rememberInfo", rememberInfo);
-          } else {
-            // 如果取消勾选则删除localStorage
-            if (localStorage.getItem("rememberInfo")) {
-              localStorage.removeItem("rememberInfo");
+      })
+        .then(function (res) {
+          // 取消加载
+          that.loadingBtn = false;
+          that.loadingLoginText = "登录";
+
+          // 接受错误信息
+          if (
+            res.data["status"] == 201 ||
+            res.data["status"] == 202 ||
+            res.data["status"] == 203
+          ) {
+            that.errorMsg = res.data["statusInfo"]["detail"];
+            that.errorStyle = "display: inline-block;";
+            // 重置验证码
+            that.getVeficationCode();
+          } else if (res.data["status"] == 200) {
+            // 如果勾选了记住密码
+            if (that.isRemember === true) {
+              let rememberInfo = {
+                username: that.user.username,
+                password: that.user.password,
+                loginObject: that.user.loginObject,
+              };
+              rememberInfo = that.$encrypt(JSON.stringify(rememberInfo));
+              localStorage.setItem("rememberInfo", rememberInfo);
+            } else {
+              // 如果取消勾选则删除localStorage
+              if (localStorage.getItem("rememberInfo")) {
+                localStorage.removeItem("rememberInfo");
+              }
+            }
+            // 登录成功, 将用户基本信息存入store
+            that.$store.commit("setUserInfo", res.data["data"]);
+
+            // 将token保存至会话中
+            sessionStorage.setItem("token", res.data["token"]);
+            // 进入相应页面
+            that.$message({
+              message: "登录成功",
+              center: true,
+              type: "success",
+            });
+            if (that.user.loginObject === "学生") {
+              // 保存登录用户类型,并进入相关路由
+              that.$store.commit("setLoginObject", "student");
+              that.$router.replace({
+                path: "/student/personal_profile",
+              });
+            } else if (that.user.loginObject === "教师") {
+              that.$store.commit("setLoginObject", "teacher");
+              that.$router.replace({
+                path: "/teacher/personal_profile",
+              });
+            } else if (that.user.loginObject === "管理员") {
+              that.$store.commit("setLoginObject", "admin");
+              that.$router.replace({
+                path: "/admin/personal_profile",
+                query: {
+                  id: res.data["data"]["id"],
+                },
+              });
             }
           }
-          // 登录成功, 将用户基本信息存入store
-          that.$store.commit("setUserInfo", res.data["data"]);
-          // 将token保存至会话中
-          sessionStorage.setItem("token", res.data["token"]);
-          // 进入相应页面
-          that.$message({
-            message: "登录成功",
-            center: true,
-            type: "success",
-          });
-          if (that.user.loginObject === "学生") {
-            that.$router.replace({
-              path: "/student/personal_profile",
-              query: {
-                id: res.data["data"]["id"],
-              },
-            });
-          } else if (that.user.loginObject === "教师") {
-            that.$router.replace({
-              path: "/teacher",
-              query: {
-                id: res.data["data"]["id"],
-              },
-            });
-          } else if (that.user.loginObject === "管理员") {
-            that.$router.replace({
-              path: "/admin",
-              query: {
-                id: res.data["data"]["id"],
-              },
-            });
-          }
-        }
-      });
+        })
+        .catch((err) => {
+          // 取消加载
+          that.loadingBtn = false;
+          that.loadingLoginText = "登录";
+          console.log(err);
+        });
       // 隐藏消息
       // that.errorStyle = "item hidden";
     },
