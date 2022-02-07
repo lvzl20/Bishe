@@ -16,11 +16,11 @@
             {{ $store.state.userInfo.name + " " }}
             <i class="el-icon-arrow-down label-font"></i>
           </span>
-          <!-- 当视口>=768时隐藏(hidden-sm-only),改为用户页面的左侧导航栏 -->
+          <!-- 当视口>=768时隐藏(hidden-sm-and-up),改为用户页面的左侧导航栏 -->
           <!-- 视图小于768时动态生成不同用户的菜单选项 -->
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item
-              class="label-font hidden-sm-only"
+              class="label-font hidden-sm-and-up"
               v-for="(item, i) in $store.getters.getMobileMenu"
               :key="item.command"
               :command="item.command"
@@ -105,11 +105,13 @@ export default {
         // 保存本次所在菜单页面
         this.$store.commit("setLastPage", "personal_profile");
         this.$router.replace(
-          `/${this.$store.state.loginObject}/personal_profile`
+          `/${this.$store.state.userInfo.loginObject}/personal_profile`
         );
       } else if (cmd === "borrow") {
         this.$store.commit("setLastPage", "borrow");
-        this.$router.replace(`/${this.$store.state.loginObject}/borrow`);
+        this.$router.replace(
+          `/${this.$store.state.userInfo.loginObject}/borrow`
+        );
         // }
       }
     },

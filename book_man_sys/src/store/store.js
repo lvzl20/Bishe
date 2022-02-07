@@ -13,9 +13,7 @@ const store = new Vuex.Store({
         // 用户信息, 账号和名字
         userInfo: {
         },
-        // 登录对象(student/teacher/admin)
-        loginObject: "",
-        // 用户登录后才显示头像和个人信息
+        // 用户登录后才显示头像和下拉框
         isLoginStyle: "display: none",
         // 记录上一次所在菜单页面,便于激活选中菜单样式
         lastPage: "personal_profile",
@@ -26,9 +24,9 @@ const store = new Vuex.Store({
             state.userInfo = data;
             state.isLoginStyle = "display: inline-block";
         },
-        setLoginObject(state, data) {
-            state.loginObject = data;
-        },
+        // setLoginObject(state, data) {
+        //     state.loginObject = data;
+        // },
         setLastPage(state, data) {
             state.lastPage = data;
         },
@@ -39,7 +37,6 @@ const store = new Vuex.Store({
         loginOut(state) {
             state.userInfo = {};
             state.isLoginStyle = "display: none";
-            state.loginObject = "";
             sessionStorage.clear();
         }
     },
@@ -48,21 +45,25 @@ const store = new Vuex.Store({
     },
     getters: {
         getMobileMenu(state) {
+            console.log(234);
+
             let userMenu;
             // 视口小于768时的下拉框菜单选项
-            if (state.loginObject === "student") {
+            if (state.userInfo.loginObject === "student") {
                 userMenu = [
                     { command: "profile", name: "个人信息(学生)" },
                     { command: "borrow", name: "当前借阅" },
                 ];
-            } else if (state.loginObject === "teacher") {
+            } else if (state.userInfo.loginObject === "teacher") {
+                console.log(233);
                 userMenu = [
                     { command: "profile", name: "个人信息(教师)" },
                     { command: "borrow", name: "当前借阅" },
                 ];
-            } else if (state.loginObject === "admin") {
+            } else if (state.userInfo.loginObject === "admin") {
                 userMenu = [{ command: "profile", name: "个人信息(管理员)" }];
             }
+            console.log(userMenu)
             return userMenu;
         }
 

@@ -68,7 +68,14 @@ const router = new Router({
       component: Admin,
       meta: {
         needLogin: true
-      }
+      },
+      children: [
+        {
+          path: 'personal_profile',
+          name: 'PersonalProfile_admin',
+          component: PersonalProfile,
+        }
+      ]
     },
     {
       path: '/teacher',

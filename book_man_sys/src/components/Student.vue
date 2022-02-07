@@ -5,7 +5,7 @@
         <el-menu
           class="el-menu-vertical-demo"
           :router="true"
-          :default-active="`/${$store.state.loginObject}/${$store.state.lastPage}`"
+          :default-active="`/${$store.state.userInfo.loginObject}/${$store.state.lastPage}`"
         >
           <el-menu-item index="/student/personal_profile">
             <span slot="title" class="label-font">个人信息</span>

@@ -32,7 +32,4 @@ export default {
 </script>
 
 <style scoped>
-h2 {
-  padding-bottom: 0.5rem;
-}
 </style>

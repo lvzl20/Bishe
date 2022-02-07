@@ -4,7 +4,7 @@
       <div slot="header">
         <el-dropdown @command="changeLoginObject">
           <span class="el-dropdown-link label-font">
-            {{ user.loginObject + "登录"
+            {{ curLoginObject + "登录"
             }}<i class="el-icon-arrow-down label-font"></i>
           </span>
           <!-- <span class="label-font">学生登录</span> -->
@@ -106,9 +106,11 @@ export default {
         password: "zs123456789",
         inputCode: "",
         // 当前登录对象(默认学生/教师/管理员)
-        loginObject: "学生",
+        loginObject: "student",
         codeReal: "",
       },
+      // 显示切换当前登录用户
+      curLoginObject: "学生",
       // 后台传入的验证码及内容
       verificationCodeSrc: "",
       // 控制是否加载
@@ -135,15 +137,29 @@ export default {
       this.user.password = rememberInfo["password"];
       this.user.loginObject = rememberInfo["loginObject"];
       this.isRemember = true;
+      if (this.user.loginObject === "student") {
+        this.curLoginObject = "学生";
+      } else if (this.user.loginObject === "teacher") {
+        this.curLoginObject = "教师";
+      } else if (this.user.loginObject === "admin") {
+        this.curLoginObject = "管理员";
+      }
     }
   },
   methods: {
     // 切换登录对象(学生,教师,管理员)
     changeLoginObject(cmd) {
       // 将登录对象修改
-      if (cmd === "student") this.user.loginObject = "学生";
-      else if (cmd === "teacher") this.user.loginObject = "教师";
-      else if (cmd === "admin") this.user.loginObject = "管理员";
+      if (cmd === "student") {
+        this.user.loginObject = "student";
+        this.curLoginObject = "学生";
+      } else if (cmd === "teacher") {
+        this.user.loginObject = "teacher";
+        this.curLoginObject = "教师";
+      } else if (cmd === "admin") {
+        this.user.loginObject = "admin";
+        this.curLoginObject = "管理员";
+      }
     },
     // 点击验证码,重新获取验证码
     getVeficationCode() {
@@ -211,8 +227,10 @@ export default {
                 localStorage.removeItem("rememberInfo");
               }
             }
-            // 登录成功, 将用户基本信息存入store
-            that.$store.commit("setUserInfo", res.data["data"]);
+            // 登录成功, 将用户基本信息存入store,将登录对象添加进去
+            let userInfo = res.data["data"];
+            userInfo["loginObject"] = that.user.loginObject;
+            that.$store.commit("setUserInfo", userInfo);
 
             // 将token保存至会话中
             sessionStorage.setItem("token", res.data["token"]);
@@ -222,26 +240,24 @@ export default {
               center: true,
               type: "success",
             });
-            if (that.user.loginObject === "学生") {
-              // 保存登录用户类型,并进入相关路由
-              that.$store.commit("setLoginObject", "student");
-              that.$router.replace({
-                path: "/student/personal_profile",
-              });
-            } else if (that.user.loginObject === "教师") {
-              that.$store.commit("setLoginObject", "teacher");
-              that.$router.replace({
-                path: "/teacher/personal_profile",
-              });
-            } else if (that.user.loginObject === "管理员") {
-              that.$store.commit("setLoginObject", "admin");
-              that.$router.replace({
-                path: "/admin/personal_profile",
-                query: {
-                  id: res.data["data"]["id"],
-                },
-              });
-            }
+            that.$router.replace(`/${that.user.loginObject}/personal_profile`);
+            // if (that.user.loginObject === "student") {
+            //   // 保存登录用户类型,并进入相关路由
+            //   that.$router.replace({
+            //     path: "/student/personal_profile",
+            //   });
+            // } else if (that.user.loginObject === "teacher") {
+            //   that.$router.replace({
+            //     path: "/teacher/personal_profile",
+            //   });
+            // } else if (that.user.loginObject === "admin") {
+            //   that.$router.replace({
+            //     path: "/admin/personal_profile",
+            //     query: {
+            //       id: res.data["data"]["id"],
+            //     },
+            //   });
+            // }
           }
         })
         .catch((err) => {
