@@ -10,6 +10,9 @@
           <el-menu-item index="/admin/personal_profile">
             <span slot="title" class="label-font">个人信息</span>
           </el-menu-item>
+          <el-menu-item index="/admin/book_manage">
+            <span slot="title" class="label-font">图书管理</span>
+          </el-menu-item>
         </el-menu>
       </el-col>
       <el-col :sm="20" :xs="24">

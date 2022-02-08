@@ -113,6 +113,11 @@ export default {
         this.$router.replace(
           `/${this.$store.state.userInfo.loginObject}/borrow`
         );
+      } else if (cmd === "book_manage") {
+        this.$store.commit("setLastPage", "book_manage");
+        this.$router.replace(
+          `/${this.$store.state.userInfo.loginObject}/book_manage`
+        );
       }
     },
   },

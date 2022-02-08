@@ -2,13 +2,22 @@ import Vue from 'vue'
 import Router from 'vue-router'
 // import { component } from 'vue/types/umd'
 const HelloWorld = () => import('@/components/HelloWorld')
-const Student = () => import('@/components/Student')
-const Admin = () => import('@/components/Admin')
-const Teacher = () => import('@/components/Teacher')
+// 学生相关组件
+const Student = () => import('@/components/obj_student/Student')
+
+// 教师相关组件
+const Teacher = () => import('@/components/obj_teacher/Teacher')
+
+// 管理员相关组件
+const Admin = () => import('@/components/obj_admin/Admin')
+const book_manage = () => import('@/components/obj_admin/Book_manage')
+
+// 公共组件
 const Login = () => import('@/components/Login')
 const NotFound = () => import('@/components/NotFound')
 const PersonalProfile = () => import('@/components/publicComponents/Personal_profile')
 const Borrow = () => import('@/components/publicComponents/Borrow')
+
 // import Admintest from '@/components/Admintest''
 
 //修改原型对象中的push和replace方法,解决路由重复。
@@ -74,7 +83,12 @@ const router = new Router({
           path: 'personal_profile',
           name: 'PersonalProfile_admin',
           component: PersonalProfile,
-        }
+        },
+        {
+          path: 'book_manage',
+          name: 'Book_manage',
+          component: book_manage,
+        },
       ]
     },
     {

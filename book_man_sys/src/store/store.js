@@ -59,9 +59,11 @@ const store = new Vuex.Store({
                     { command: "borrow", name: "当前借阅" },
                 ];
             } else if (state.userInfo.loginObject === "admin") {
-                userMenu = [{ command: "profile", name: "个人信息(管理员)" }];
+                userMenu = [
+                    { command: "profile", name: "个人信息(管理员)" },
+                    { command: "book_manage", name: "图书管理" },
+                ];
             }
-            console.log(userMenu)
             return userMenu;
         }
 
