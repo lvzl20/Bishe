@@ -100,6 +100,7 @@ export default {
           message: "注销成功",
           center: true,
           type: "success",
+          duration: "1500",
         });
       } else if (cmd === "profile") {
         // 保存本次所在菜单页面
@@ -112,7 +113,6 @@ export default {
         this.$router.replace(
           `/${this.$store.state.userInfo.loginObject}/borrow`
         );
-        // }
       }
     },
   },

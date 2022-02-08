@@ -33,6 +33,7 @@ function showMsg(msg, type = "info") {
     message: msg,
     center: true,
     type: type,
+    duration: "1500",
   })
 }
 
@@ -57,25 +58,14 @@ Axios.interceptors.response.use(
   },
   (error) => {
     // 这个是处理响应失败的，也就是响应错误的，在这个箭头函数中，才能拿到401状态下的包
-    // if (error.response.status === 401) {
-    //   // 清除token
-    //   sessionStorage.removeItem("token");
-    //   that.$message({
-    //     message: "登录失效，请重新登录",
-    //     center: true,
-    //     type: "info",
-    //   });
-    //   // 重新跳转到login页面
-    //   this.$router.replace("/login");
-    // }
     if (error && error.response) {
-      // case 401: this.$router.replace('/login'); break
       switch (error.response.status) {
         case 400: showMsg("请求错误(400)", "error"); break;
         case 401:
           sessionStorage.removeItem("token");
-          showMsg("登录失效，请重新登录(401)");
-          this.$router.replace('/login'); break;
+          showMsg("登录失效,请重新登录(401)");
+          store.commit("loginOut");
+          router.replace("/login"); break;
         case 403: showMsg("拒绝访问(403)", "error"); break;
         case 404: showMsg("请求出错(404)", "error"); break;
         case 408: showMsg("请求超时(408)", "error"); break;

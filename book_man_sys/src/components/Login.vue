@@ -239,25 +239,9 @@ export default {
               message: "登录成功",
               center: true,
               type: "success",
+              duration: "1500",
             });
             that.$router.replace(`/${that.user.loginObject}/personal_profile`);
-            // if (that.user.loginObject === "student") {
-            //   // 保存登录用户类型,并进入相关路由
-            //   that.$router.replace({
-            //     path: "/student/personal_profile",
-            //   });
-            // } else if (that.user.loginObject === "teacher") {
-            //   that.$router.replace({
-            //     path: "/teacher/personal_profile",
-            //   });
-            // } else if (that.user.loginObject === "admin") {
-            //   that.$router.replace({
-            //     path: "/admin/personal_profile",
-            //     query: {
-            //       id: res.data["data"]["id"],
-            //     },
-            //   });
-            // }
           }
         })
         .catch((err) => {
@@ -266,8 +250,6 @@ export default {
           that.loadingLoginText = "登录";
           console.log(err);
         });
-      // 隐藏消息
-      // that.errorStyle = "item hidden";
     },
     // 检查用户输入信息是否正确,前端进行简单判断,主要还是给后端判断
     judgeUserInput() {
@@ -295,6 +277,7 @@ export default {
     },
     // 关闭错误提示时,设置this.errorStyle = "display: none;";
     closeErrMsg() {
+      this.errorMsg = "";
       this.errorStyle = "display: none;";
     },
   },
@@ -333,10 +316,7 @@ a {
   text-decoration: none;
   float: right;
 }
-.el-input {
-  /* height: 20px; */
-  width: 75%;
-}
+
 .verification-code {
   width: 25%;
   height: 36px;
@@ -344,6 +324,10 @@ a {
 }
 .verification-code:hover {
   cursor: pointer;
+}
+.el-input {
+  /* height: 20px; */
+  width: 75%;
 }
 .el-input >>> .el-input__inner {
   cursor: pointer;

@@ -24,14 +24,13 @@ const store = new Vuex.Store({
             state.userInfo = data;
             state.isLoginStyle = "display: inline-block";
         },
-        // setLoginObject(state, data) {
-        //     state.loginObject = data;
-        // },
+
         setLastPage(state, data) {
             state.lastPage = data;
         },
-        setMobileMenu(state, data) {
-            state.mobileMenu = data;
+        // 改变某个用户值
+        setSomeUserInfo(state, data) {
+            state.userInfo[data['name']] = data['value'];
         },
         // 用户注销,清空sessionstorage
         loginOut(state) {
@@ -45,7 +44,6 @@ const store = new Vuex.Store({
     },
     getters: {
         getMobileMenu(state) {
-            console.log(234);
 
             let userMenu;
             // 视口小于768时的下拉框菜单选项
