@@ -23,9 +23,12 @@
 <script>
 // 个人信息页面
 export default {
-  name: "borrow",
+  name: "Borrow",
   data() {
     return {};
+  },
+  mounted() {
+    this.$store.commit("setLastPage", "borrow");
   },
   methods: {},
 };

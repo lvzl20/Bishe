@@ -65,6 +65,9 @@ Axios.interceptors.response.use(
           sessionStorage.removeItem("token");
           showMsg("登录失效,请重新登录(401)");
           store.commit("loginOut");
+          // 清空历史栈
+          let backlen = history.length - 1;
+          history.go(-backlen);
           router.replace("/login"); break;
         case 403: showMsg("拒绝访问(403)", "error"); break;
         case 404: showMsg("请求出错(404)", "error"); break;

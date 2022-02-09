@@ -37,8 +37,11 @@ export default {
   },
   mounted: function () {
     // 进入页面先进入个人信息
-    this.$router.replace("/student/personal_profile");
-    this.$store.commit("setLastPage", "personal_profile");
+    if (this.$store.state.isFirstInto === true) {
+      this.$router.replace("/student/personal_profile");
+      this.$store.commit("setLastPage", "personal_profile");
+      this.$store.commit("setFirstLoginInvalid");
+    }
   },
   methods: {},
 };

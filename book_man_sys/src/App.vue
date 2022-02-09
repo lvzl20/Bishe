@@ -1,5 +1,9 @@
 <template>
   <div id="app">
+    <!-- 回到顶部 -->
+    <el-backtop :bottom="80" :right="10" :visibility-height="400">
+      <div class="back-top"></div>
+    </el-backtop>
     <el-row class="header">
       <el-col>
         <div class="header-text">计算机科学与技术学院图书系统</div>
@@ -95,6 +99,9 @@ export default {
       // 点击注销
       if (cmd === "loginOut") {
         this.$store.commit("loginOut");
+        // 清空历史栈
+        let backlen = history.length - 1;
+        history.go(-backlen);
         this.$router.replace("/login");
         this.$message({
           message: "注销成功",
@@ -102,29 +109,30 @@ export default {
           type: "success",
           duration: "1500",
         });
-      } else if (cmd === "profile") {
-        // 保存本次所在菜单页面
-        this.$store.commit("setLastPage", "personal_profile");
-        this.$router.replace(
-          `/${this.$store.state.userInfo.loginObject}/personal_profile`
-        );
-      } else if (cmd === "borrow") {
-        this.$store.commit("setLastPage", "borrow");
-        this.$router.replace(
-          `/${this.$store.state.userInfo.loginObject}/borrow`
-        );
-      } else if (cmd === "book_manage") {
-        this.$store.commit("setLastPage", "book_manage");
-        this.$router.replace(
-          `/${this.$store.state.userInfo.loginObject}/book_manage`
-        );
+      } else {
+        this.$router.push(`/${this.$store.state.userInfo.loginObject}/${cmd}`);
       }
+      // else if (cmd === "profile") {
+      //   // 保存本次所在菜单页面
+      //   this.$router.push(
+      //     `/${this.$store.state.userInfo.loginObject}/personal_profile`
+      //   );
+      // } else if (cmd === "borrow") {
+      //   this.$router.push(`/${this.$store.state.userInfo.loginObject}/borrow`);
+      // } else if (cmd === "book_manage") {
+      //   this.$router.push(
+      //     `/${this.$store.state.userInfo.loginObject}/book_manage`
+      //   );
+      // }
     },
   },
 };
 </script>
 
 <style>
+#app {
+  /* overflow-y: scroll; */
+}
 html {
   font-size: 62.5%; /*10 ÷ 16 × 100% = 62.5%*/
 }
@@ -135,6 +143,7 @@ p {
   font-size: 14px;
   font-size: 1.4rem;
 }
+/* 顶部内容 */
 .header {
   background-image: url(./assets/header_img.jpg);
   background-position: center;
@@ -143,6 +152,7 @@ p {
   height: 110px;
   margin: 0;
 }
+/* 顶部文字 */
 .header-text {
   color: #3a3a3a;
   font-size: 2.5rem;
@@ -150,14 +160,14 @@ p {
   margin-top: 0.1rem;
   margin-left: 2rem;
 }
-/* .menubar {
-  text-decoration: none;
-} */
+
+/* 全局文字样式,需要时调用 */
 .label-font {
   font-size: 1.6rem;
   font-family: "微软雅黑";
   color: #303133;
 }
+/* 下拉框 */
 .el-dropdown-link {
   cursor: pointer;
 }
@@ -177,5 +187,17 @@ p {
 }
 .el-dropdown-menu {
   background-color: rgba(189, 218, 230, 0.7);
+}
+.back-top {
+  /* background-color: rgba(135, 206, 235, 0.3);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  line-height: 40px;
+  color: #1989fa; */
+  width: 100%;
+  height: 100%;
+  background-image: url(./assets/backTop.png);
+  /* background-position: center; */
+  background-repeat: no-repeat;
 }
 </style>

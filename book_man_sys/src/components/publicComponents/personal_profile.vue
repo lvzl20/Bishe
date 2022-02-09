@@ -513,6 +513,7 @@ export default {
     };
   },
   mounted() {
+    this.$store.commit("setLastPage", "personal_profile");
     let that = this;
     // 监听屏幕的实时变化以改变dialog的宽度达到适配部分pc 移动的目的。
     window.addEventListener("resize", function () {
@@ -608,6 +609,9 @@ export default {
             });
             that.dialogPassword = false;
             that.$store.commit("loginOut");
+            // 清空历史栈
+            let backlen = history.length - 1;
+            history.go(-backlen);
             that.$router.replace("/login");
           }
         })

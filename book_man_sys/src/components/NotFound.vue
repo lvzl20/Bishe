@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: "Test",
+  name: "NotFound",
   methods: {
     back() {
       history.go(-1);

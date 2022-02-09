@@ -13,6 +13,8 @@ const store = new Vuex.Store({
         // 用户信息, 账号和名字
         userInfo: {
         },
+        // 是否第一次登录进入
+        isFirstInto: true,
         // 用户登录后才显示头像和下拉框
         isLoginStyle: "display: none",
         // 记录上一次所在菜单页面,便于激活选中菜单样式
@@ -24,7 +26,9 @@ const store = new Vuex.Store({
             state.userInfo = data;
             state.isLoginStyle = "display: inline-block";
         },
-
+        setFirstLoginInvalid(state) {
+            state.isFirstInto = false;
+        },
         setLastPage(state, data) {
             state.lastPage = data;
         },
@@ -34,6 +38,7 @@ const store = new Vuex.Store({
         },
         // 用户注销,清空sessionstorage
         loginOut(state) {
+            state.isFirstInto = true;
             state.userInfo = {};
             state.isLoginStyle = "display: none";
             sessionStorage.clear();
@@ -49,18 +54,18 @@ const store = new Vuex.Store({
             // 视口小于768时的下拉框菜单选项
             if (state.userInfo.loginObject === "student") {
                 userMenu = [
-                    { command: "profile", name: "个人信息(学生)" },
+                    { command: "personal_profile", name: "个人信息" },
                     { command: "borrow", name: "当前借阅" },
                 ];
             } else if (state.userInfo.loginObject === "teacher") {
                 console.log(233);
                 userMenu = [
-                    { command: "profile", name: "个人信息(教师)" },
+                    { command: "personal_profile", name: "个人信息" },
                     { command: "borrow", name: "当前借阅" },
                 ];
             } else if (state.userInfo.loginObject === "admin") {
                 userMenu = [
-                    { command: "profile", name: "个人信息(管理员)" },
+                    { command: "personal_profile", name: "个人信息" },
                     { command: "book_manage", name: "图书管理" },
                 ];
             }

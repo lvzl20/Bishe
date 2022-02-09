@@ -10,7 +10,10 @@ const Teacher = () => import('@/components/obj_teacher/Teacher')
 
 // 管理员相关组件
 const Admin = () => import('@/components/obj_admin/Admin')
-const book_manage = () => import('@/components/obj_admin/Book_manage')
+const Book_manage = () => import('@/components/obj_admin/Book_manage')
+
+// 图书相关组件
+const Book_detail = () => import('@/components/obj_book/Book_detail')
 
 // 公共组件
 const Login = () => import('@/components/Login')
@@ -38,6 +41,7 @@ const router = new Router({
       path: '/',
       redirect: '/login'
     },
+    // 登录页面
     {
       path: '/login',
       name: 'Login',
@@ -51,6 +55,7 @@ const router = new Router({
         needLogin: true
       }
     },
+    // 学生页面
     {
       path: '/student',
       name: 'Student',
@@ -71,6 +76,7 @@ const router = new Router({
         }
       ]
     },
+    // 管理员页面
     {
       path: '/admin',
       name: 'Admin',
@@ -87,10 +93,11 @@ const router = new Router({
         {
           path: 'book_manage',
           name: 'Book_manage',
-          component: book_manage,
+          component: Book_manage,
         },
       ]
     },
+    // 教师页面
     {
       path: '/teacher',
       name: 'Teacher',
@@ -112,9 +119,18 @@ const router = new Router({
       ]
     },
     {
+      path: '/book_detail',
+      name: 'Book_detail',
+      meta: {
+        needLogin: true
+      },
+      component: Book_detail,
+    },
+    // 404页面
+    {
       path: '/notfound',
-      name: 'Notfound',
-      component: NotFound
+      name: 'NotFound',
+      component: NotFound,
     },
     {
       path: '*',
@@ -125,25 +141,17 @@ const router = new Router({
 // 路由导航router.beforeEach 注册一个全局前置守卫，判断用户是否登陆
 router.beforeEach((to, from, next) => {
   let token = sessionStorage.getItem("token");
-  // console.log("进入守卫")
   // 有token的时候
   if (token) {
-    // 如果用户登录
-    // console.log(6)
     next()
   }
   else {
     // 需要登录权限的页面没有token进入登录页面
     if (to.meta.needLogin || to.path === './login') {
-      console.log(to.meta.needLogin)
-      // console.log(2)
       next('./login')
-    } else if (to.path === './notfound') {
-      // console.log(3)
+    } else {
       next()
     }
-    // console.log(4)
-    next();
   }
 
 })

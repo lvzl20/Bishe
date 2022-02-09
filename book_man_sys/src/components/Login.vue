@@ -241,7 +241,8 @@ export default {
               type: "success",
               duration: "1500",
             });
-            that.$router.replace(`/${that.user.loginObject}/personal_profile`);
+            // /personal_profile
+            that.$router.replace(`/${that.user.loginObject}`);
           }
         })
         .catch((err) => {
