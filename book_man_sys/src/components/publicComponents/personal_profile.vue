@@ -564,12 +564,7 @@ export default {
                 name: "tel",
                 value: that.form.newTelephone,
               });
-            that.$message({
-              message: "修改成功",
-              center: true,
-              type: "success",
-              duration: "1500",
-            });
+            that.$showMsg("修改成功", "success");
             that.dialogForm = false;
           }
         })
@@ -601,12 +596,7 @@ export default {
             that.errorMsg = res.data["statusInfo"]["detail"];
             that.errorStyle = "display: inline-block;";
           } else if (res.data["status"] === 200) {
-            that.$message({
-              message: "修改成功，请重新登录",
-              center: true,
-              type: "success",
-              duration: "1500",
-            });
+            that.$showMsg("修改成功，请重新登录", "success");
             that.dialogPassword = false;
             that.$store.commit("loginOut");
             // 清空历史栈

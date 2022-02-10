@@ -36,6 +36,8 @@ function showMsg(msg, type = "info") {
     duration: "1500",
   })
 }
+// 将展示消息框加入原型
+Vue.prototype.$showMsg = showMsg
 
 Axios.interceptors.request.use(
   (config) => {

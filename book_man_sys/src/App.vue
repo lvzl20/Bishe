@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- 回到顶部 -->
-    <el-backtop :bottom="80" :right="10" :visibility-height="400">
+    <el-backtop :bottom="100" :right="10" :visibility-height="400">
       <div class="back-top"></div>
     </el-backtop>
     <el-row class="header">
@@ -12,9 +12,10 @@
       <el-col :style="$store.state.isLoginStyle">
         <!-- 个人信息下拉框 -->。
         <el-dropdown
-          @command="changeProfileOption"
+          @command="changeOption"
           style="float: right; margin: 25px 0 5px 10px"
           trigger="click"
+          placement="bottom"
         >
           <span class="el-dropdown-link label-font">
             {{ $store.state.userInfo.name + " " }}
@@ -95,7 +96,7 @@ export default {
     errorHandler() {
       return true;
     },
-    changeProfileOption(cmd) {
+    changeOption(cmd) {
       // 点击注销
       if (cmd === "loginOut") {
         this.$store.commit("loginOut");
@@ -103,27 +104,10 @@ export default {
         let backlen = history.length - 1;
         history.go(-backlen);
         this.$router.replace("/login");
-        this.$message({
-          message: "注销成功",
-          center: true,
-          type: "success",
-          duration: "1500",
-        });
+        this.$showMsg("注销成功", "success");
       } else {
         this.$router.push(`/${this.$store.state.userInfo.loginObject}/${cmd}`);
       }
-      // else if (cmd === "profile") {
-      //   // 保存本次所在菜单页面
-      //   this.$router.push(
-      //     `/${this.$store.state.userInfo.loginObject}/personal_profile`
-      //   );
-      // } else if (cmd === "borrow") {
-      //   this.$router.push(`/${this.$store.state.userInfo.loginObject}/borrow`);
-      // } else if (cmd === "book_manage") {
-      //   this.$router.push(
-      //     `/${this.$store.state.userInfo.loginObject}/book_manage`
-      //   );
-      // }
     },
   },
 };
@@ -171,12 +155,51 @@ p {
 .el-dropdown-link {
   cursor: pointer;
 }
+
 /* 设置分割线样式 */
 .el-divider {
   background-color: #ccc;
 }
 .el-divider--horizontal {
   margin: 0;
+}
+/* 下拉选择符号 */
+.caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 4px;
+  vertical-align: middle;
+  border-top: 6px dashed;
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;
+}
+.el-button:hover {
+  /* color: blue; */
+  color: rgba(0, 0, 255, 0.7);
+  font-weight: bold;
+}
+.el-button:focus {
+  /* color: blue; */
+  color: rgba(0, 0, 255, 0.7);
+  font-weight: bold;
+}
+/* dialog */
+.el-dialog__header {
+  text-align: center;
+  /* background-color: rgb(225, 248, 254); */
+}
+.el-dialog__body {
+  /* background-color: rgb(225, 248, 254); */
+}
+.el-dialog__footer {
+  /* background-color: rgb(225, 248, 254); */
+}
+/* form选项标签 */
+.el-form-item__label {
+  font-size: 14px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
 }
 </style>
 
@@ -187,17 +210,12 @@ p {
 }
 .el-dropdown-menu {
   background-color: rgba(189, 218, 230, 0.7);
+  margin: 0;
 }
 .back-top {
-  /* background-color: rgba(135, 206, 235, 0.3);
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.12);
-  text-align: center;
-  line-height: 40px;
-  color: #1989fa; */
   width: 100%;
   height: 100%;
   background-image: url(./assets/backTop.png);
-  /* background-position: center; */
   background-repeat: no-repeat;
 }
 </style>

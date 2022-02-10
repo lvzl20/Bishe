@@ -2,7 +2,11 @@
   <div class="login-flex">
     <el-card class="box-login label-font" body-style="padding:1rem;">
       <div slot="header">
-        <el-dropdown @command="changeLoginObject">
+        <el-dropdown
+          @command="changeLoginObject"
+          trigger="click"
+          placement="bottom"
+        >
           <span class="el-dropdown-link label-font">
             {{ curLoginObject + "登录"
             }}<i class="el-icon-arrow-down label-font"></i>
@@ -235,12 +239,7 @@ export default {
             // 将token保存至会话中
             sessionStorage.setItem("token", res.data["token"]);
             // 进入相应页面
-            that.$message({
-              message: "登录成功",
-              center: true,
-              type: "success",
-              duration: "1500",
-            });
+            that.$showMsg("登录成功", "success");
             // /personal_profile
             that.$router.replace(`/${that.user.loginObject}`);
           }
@@ -311,13 +310,19 @@ export default {
 .item {
   height: 36px;
   margin: 15px auto;
-  /* float: left; */
 }
 a {
   text-decoration: none;
   float: right;
 }
-
+.el-dropdown-menu__item:hover {
+  background-color: skyblue;
+  color: blue;
+}
+.el-dropdown-menu {
+  background-color: rgba(189, 218, 230, 0.7);
+  margin: 0;
+}
 .verification-code {
   width: 25%;
   height: 36px;
