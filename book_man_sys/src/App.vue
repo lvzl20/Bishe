@@ -101,8 +101,8 @@ export default {
       if (cmd === "loginOut") {
         this.$store.commit("loginOut");
         // 清空历史栈
-        let backlen = history.length - 1;
-        history.go(-backlen);
+        // let backlen = history.length - 1;
+        // history.go(-backlen);
         this.$router.replace("/login");
         this.$showMsg("注销成功", "success");
       } else {
@@ -114,9 +114,6 @@ export default {
 </script>
 
 <style>
-#app {
-  /* overflow-y: scroll; */
-}
 html {
   font-size: 62.5%; /*10 ÷ 16 × 100% = 62.5%*/
 }
@@ -127,6 +124,7 @@ p {
   font-size: 14px;
   font-size: 1.4rem;
 }
+
 /* 顶部内容 */
 .header {
   background-image: url(./assets/header_img.jpg);
@@ -181,19 +179,20 @@ p {
 }
 .el-button:focus {
   /* color: blue; */
-  color: rgba(0, 0, 255, 0.7);
-  font-weight: bold;
+  /* color: rgba(0, 0, 255, 0.7); */
+  /* font-weight: bold; */
+  color: #303133;
 }
 /* dialog */
 .el-dialog__header {
   text-align: center;
-  /* background-color: rgb(225, 248, 254); */
+  background-color: rgb(200, 227, 237);
 }
 .el-dialog__body {
-  /* background-color: rgb(225, 248, 254); */
+  background-color: rgb(200, 227, 237);
 }
 .el-dialog__footer {
-  /* background-color: rgb(225, 248, 254); */
+  background-color: rgb(200, 227, 237);
 }
 /* form选项标签 */
 .el-form-item__label {

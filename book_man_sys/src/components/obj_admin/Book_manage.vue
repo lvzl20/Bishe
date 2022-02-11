@@ -1,5 +1,10 @@
 <template>
-  <div>
+  <div
+    v-loading="listLoading"
+    element-loading-text="加载图书中..."
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)"
+  >
     <h2 class="label-font">图书管理</h2>
     <el-divider></el-divider>
     <br />
@@ -14,6 +19,10 @@
         :width="dialogWidth"
       >
         <el-form
+          v-loading="addLoading"
+          element-loading-text="添加图书中..."
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="rgba(0, 0, 0, 0.8)"
           :model="addForm"
           ref="addForm"
           label-width="80px"
@@ -75,13 +84,13 @@
               show-word-limit
             ></el-input>
           </el-form-item>
-          <el-form-item>
-            <div style="text-align: center">
-              <el-button @click="onSubmitAdd('addForm')">添加</el-button>
-              <el-button @click="resetForm('addForm')">重置</el-button>
-              <el-button @click="closeDialog">取消</el-button>
-            </div>
-          </el-form-item>
+          <!-- <el-form-item> -->
+          <div style="text-align: center">
+            <el-button @click="onSubmitAdd('addForm')">添加</el-button>
+            <el-button @click="resetForm('addForm')">重置</el-button>
+            <el-button @click="closeDialog">取消</el-button>
+          </div>
+          <!-- </el-form-item> -->
         </el-form>
       </el-dialog>
       <!-- 搜索下拉框 -->
@@ -110,10 +119,20 @@
       <el-button class="label-font" @click="getCurrentTotalList"
         >搜索</el-button
       >
+      <el-button class="label-font" @click="getCurrentTotalList(true)"
+        >刷新</el-button
+      >
     </div>
     <br />
+    <h1
+      v-if="currentTotalData.length === 0"
+      style="text-align: center; color: green"
+    >
+      暂无图书记录,如未找到想要的图书,请联系管理员添加。
+    </h1>
     <!-- 图书数据 -->
     <table
+      v-else
       width="100%"
       border="0"
       cellpadding="1"
@@ -140,17 +159,25 @@
             <a :href="'/book_detail?id=' + book.id">{{ book.name }}</a>
           </td>
           <td class="item font">{{ book.author }}</td>
-          <td class="item font">{{ book.publisher }}</td>
+          <td class="item font">{{ book.publisher + "出版社" }}</td>
           <td class="item font">{{ book.isbn }}</td>
           <td class="item font">{{ book.type }}</td>
           <td class="item font">{{ book.in_time }}</td>
-          <td class="item font" v-if="book.state === 0" style="color: green">
+          <td v-if="book.state === 0" class="item font" style="color: green">
             否
           </td>
-          <td class="item font" v-else style="color: red">是</td>
+          <td v-else class="item font" style="color: red">是</td>
           <td class="item">
             <el-button size="small" class="font">编辑</el-button>
-            <el-button size="small" class="font">删除</el-button>
+            <!-- 如果图书借出禁用删除按钮 -->
+            <el-button
+              v-if="book.state === 1"
+              size="small"
+              class="font"
+              disabled
+              >删除</el-button
+            >
+            <el-button v-else size="small" class="font">删除</el-button>
           </td>
         </tr>
       </tbody>
@@ -180,275 +207,8 @@ export default {
   data() {
     return {
       // 后端获取的图书数据
-      book_list: [
-        {
-          id: "00001",
-          name: "vue.js实战",
-          author: "梁灏333",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "00002",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "00003",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "00004",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "00005",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "00006",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "00007",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "00008",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "00009",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000010",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000011",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000012",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000013",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000014",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000015",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000016",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000017",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000018",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000019",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000020",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000021",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000022",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000023",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000024",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000025",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000026",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000027",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000028",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000029",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000030",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000031",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000032",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000033",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000034",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000035",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000036",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000037",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-        {
-          id: "000038",
-          name: "vue.js实战",
-          author: "梁灏",
-          price: "79.00",
-          publisher: "清华大学",
-        },
-      ],
-      listLoading: true,
+      listLoading: true, // 获取图书时加载
+      addLoading: false, // 添加图书时加载
       totalPage: 1, // 总共页数，默认为1
       currentPage: 1, //当前页数 ，默认为1
       pageSize: 20, // 每页显示数量
@@ -533,8 +293,11 @@ export default {
   },
   methods: {
     // 获取数据库图书数据,根据查询条件
-    getCurrentTotalList() {
+    getCurrentTotalList(isRefresh = false) {
+      // 点击刷新
+      if (isRefresh === true) this.keyword = "";
       let that = this;
+      this.listLoading = true;
       this.$axios({
         method: "post",
         url: "/book_manage/query_book",
@@ -544,6 +307,7 @@ export default {
         },
       })
         .then(function (res) {
+          that.listLoading = false;
           // 查询成功
           if (res.data["status"] === 200) {
             that.currentTotalData = res.data["data"]["book_list"];
@@ -553,6 +317,7 @@ export default {
           }
         })
         .catch((err) => {
+          that.listLoading = false;
           console.log(err);
         });
     },
@@ -577,29 +342,27 @@ export default {
     changeOption(cmd) {
       this.queryObject = cmd;
     },
-    // 点击搜索
-    queryBooks() {
-      var arr = [];
-      for (var i = 0; i < this.book_list.length; i++) {
-        if (this.book_list[i][this.queryObject].indexOf(this.keyword) >= 0) {
-          arr.push(this.book_list[i]);
-        }
-      }
-      this.currentTotalData = arr;
-      // 获取当前页数据
-      this.getCurrentPageList();
-    },
     // 添加图书提交给后端
     onSubmitAdd(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          let submitForm = {};
+          for (let k in this.addForm) {
+            submitForm[k] = this.addForm[k];
+          }
+          // 添加admin_id和admin_name传给后端
+          submitForm["admin_id"] = this.$store.state.userInfo.id;
+          submitForm["admin_name"] = this.$store.state.userInfo.name;
+          // 加载
+          this.addLoading = true;
           let that = this;
           this.$axios({
             method: "post",
             url: "/book_manage/add_book",
-            data: that.addForm,
+            data: submitForm,
           })
             .then(function (res) {
+              that.addLoading = false;
               if (res.data["status"] === 200) {
                 that.$showMsg("添加图书成功", "success");
                 // 提交后重置表单
@@ -611,6 +374,7 @@ export default {
               }
             })
             .catch((err) => {
+              that.addLoading = false;
               // 关闭dialog
               that.closeDialog();
               console.log(err);
@@ -684,5 +448,14 @@ td {
 }
 .el-input {
   width: 70%;
+}
+.el-button.is-disabled,
+.el-button.is-disabled:focus,
+.el-button.is-disabled:hover {
+  /* color: #c0c4cc; */
+  /* cursor: not-allowed; */
+  /* background-image: none; */
+  background-color: #fff;
+  /* border-color: #ebeef5; */
 }
 </style>

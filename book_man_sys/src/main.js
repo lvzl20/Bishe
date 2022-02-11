@@ -63,14 +63,22 @@ Axios.interceptors.response.use(
     if (error && error.response) {
       switch (error.response.status) {
         case 400: showMsg("请求错误(400)", "error"); break;
-        case 401:
+        case 401: {
           sessionStorage.removeItem("token");
-          showMsg("登录失效,请重新登录(401)");
+          showMsg("登录失效,请重新登录");
+          console.log(22)
           store.commit("loginOut");
           // 清空历史栈
-          let backlen = history.length - 1;
-          history.go(-backlen);
-          router.replace("/login"); break;
+          // let backlen = history.length - 1;
+          // history.go(-backlen + 2);
+          router.replace({
+            path: "/login",
+            query: {
+              redirect: router.currentRoute.fullPath//登录之后跳转到对应页面
+            }
+          });
+          break;
+        }
         case 403: showMsg("拒绝访问(403)", "error"); break;
         case 404: showMsg("请求出错(404)", "error"); break;
         case 408: showMsg("请求超时(408)", "error"); break;
